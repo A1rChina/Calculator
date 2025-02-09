@@ -55,6 +55,12 @@
             font-size: 16px;
             color: #333;
         }
+        .clear-btn {
+            background-color: #f44336;
+        }
+        .clear-btn:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +79,9 @@
         <div class="result" id="result"></div>
 
         <div class="history" id="history"></div>
+
+        <!-- 新增清除历史记录按钮 -->
+        <button class="clear-btn" onclick="clearHistory()">清除历史记录</button>
     </div>
 
     <script>
@@ -119,6 +128,12 @@
             history.push({ entryPrice, stopPrice, leverage });
             localStorage.setItem('leverageHistory', JSON.stringify(history));
             loadHistory();  // 更新历史记录
+        }
+
+        // 清除历史记录
+        function clearHistory() {
+            localStorage.removeItem('leverageHistory');
+            loadHistory();  // 清除后重新加载（清空历史记录区域）
         }
 
         // 页面加载时加载历史记录
