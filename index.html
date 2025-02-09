@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杠杆计算工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        label, input, button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>杠杆计算工具</h1>
+    
+    <div class="container">
+        <label for="entryPrice">入场价格</label>
+        <input type="number" id="entryPrice" placeholder="请输入入场价格" required>
+
+        <label for="stopPrice">止损价格</label>
+        <input type="number" id="stopPrice" placeholder="请输入止损价格" required>
+
+        <label for="maxLossPercentage">最大可接受亏损百分比</label>
+        <input type="number" id="maxLossPercentage" placeholder="请输入最大可接受亏损百分比" required>
+
+        <button onclick="calculateLeverage()">计算杠杆倍数</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateLeverage() {
+            const entryPrice = parseFloat(document.getElementById("entryPrice").value);
+            const stopPrice = parseFloat(document.getElementById("stopPrice").value);
+            const maxLossPercentage = parseFloat(document.getElementById("maxLossPercentage").value);
+
+            if (isNaN(entryPrice) || isNaN(stopPrice) || isNaN(maxLossPercentage)) {
+                alert("请输入有效的数值！");
+                return;
+            }
+
+            // 计算止损区间的百分比变化
+            const stopLossPercentage = Math.abs((stopPrice - entryPrice) / entryPrice) * 100;
+
+            // 计算最大杠杆倍数
+            const leverage = maxLossPercentage / stopLossPercentage;
+
+            // 显示计算结果
+            document.getElementById("result").innerText = `最大杠杆倍数: ${leverage.toFixed(2)}倍`;
+        }
+    </script>
+
+</body>
+</html>
