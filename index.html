@@ -8,37 +8,52 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f4f4f9;
         }
         h1 {
             text-align: center;
+            color: #333;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: auto;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color: #fff;
         }
         label, input, button {
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         input, button {
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
         button {
-            cursor: pointer;
             background-color: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
         }
         .result {
             font-size: 18px;
             font-weight: bold;
             text-align: center;
+            margin-top: 20px;
+        }
+        .history {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .history p {
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -53,21 +68,34 @@
         <label for="stopPrice">止损价格</label>
         <input type="number" id="stopPrice" placeholder="请输入止损价格" required>
 
-        <label for="maxLossPercentage">最大可接受亏损百分比</label>
-        <input type="number" id="maxLossPercentage" placeholder="请输入最大可接受亏损百分比" required>
-
         <button onclick="calculateLeverage()">计算杠杆倍数</button>
 
         <div class="result" id="result"></div>
+
+        <div class="history" id="history"></div>
     </div>
 
     <script>
+        const maxLossPercentage = 10;  // 默认最大可接受亏损百分比为10%
+
+        // 从本地存储加载历史记录
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('leverageHistory')) || [];
+            const historyDiv = document.getElementById('history');
+            historyDiv.innerHTML = '';
+            history.forEach(item => {
+                const p = document.createElement('p');
+                p.textContent = `入场价格: ${item.entryPrice}, 止损价格: ${item.stopPrice}, 最大杠杆倍数: ${item.leverage.toFixed(2)}倍`;
+                historyDiv.appendChild(p);
+            });
+        }
+
+        // 计算杠杆倍数
         function calculateLeverage() {
             const entryPrice = parseFloat(document.getElementById("entryPrice").value);
             const stopPrice = parseFloat(document.getElementById("stopPrice").value);
-            const maxLossPercentage = parseFloat(document.getElementById("maxLossPercentage").value);
 
-            if (isNaN(entryPrice) || isNaN(stopPrice) || isNaN(maxLossPercentage)) {
+            if (isNaN(entryPrice) || isNaN(stopPrice)) {
                 alert("请输入有效的数值！");
                 return;
             }
@@ -80,7 +108,21 @@
 
             // 显示计算结果
             document.getElementById("result").innerText = `最大杠杆倍数: ${leverage.toFixed(2)}倍`;
+
+            // 保存历史记录
+            saveHistory(entryPrice, stopPrice, leverage);
         }
+
+        // 保存历史记录到本地存储
+        function saveHistory(entryPrice, stopPrice, leverage) {
+            const history = JSON.parse(localStorage.getItem('leverageHistory')) || [];
+            history.push({ entryPrice, stopPrice, leverage });
+            localStorage.setItem('leverageHistory', JSON.stringify(history));
+            loadHistory();  // 更新历史记录
+        }
+
+        // 页面加载时加载历史记录
+        loadHistory();
     </script>
 
 </body>
